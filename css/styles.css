@@ -894,12 +894,477 @@ p {
   }
 }
 
+/* =====================================================================
+   Motion
+   Everything here is switched off for prefers-reduced-motion (bottom).
+   ===================================================================== */
+
+:root {
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-spring: cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+
+/* ----- Header: scroll progress + frosted state ----- */
+
+.site-header {
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.site-header.scrolled {
+  background: rgba(11, 11, 11, 0.85);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+}
+
+.scroll-progress {
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--green-dark), var(--green-light));
+  box-shadow: 0 0 10px rgba(92, 184, 72, 0.7);
+  transform: scaleX(var(--progress, 0));
+  transform-origin: left;
+}
+
+.header-cta {
+  animation: cta-pulse 2.8s ease-out infinite;
+}
+
+@keyframes cta-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(92, 184, 72, 0.6); }
+  70%, 100% { box-shadow: 0 0 0 16px rgba(92, 184, 72, 0); }
+}
+
+/* ----- Hero: slow zoom + parallax photo, staggered entrance ----- */
+
+.hero::before {
+  translate: 0 var(--parallax, 0px);
+  transform-origin: 70% 50%;
+  animation: ken-burns 18s ease-in-out infinite alternate;
+}
+
+@keyframes ken-burns {
+  from { scale: 1; }
+  to { scale: 1.1; }
+}
+
+.hero-inner {
+  translate: 0 var(--hero-drift, 0px);
+}
+
+/* Headline: each word slides up out of a mask (words are wrapped by main.js) */
+.hero h1 .word {
+  display: inline-block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+  vertical-align: top;
+}
+
+.hero h1 .word > span {
+  display: inline-block;
+  transform: translateY(110%);
+  animation: word-up 0.9s var(--ease-out) forwards;
+  animation-delay: calc(var(--i) * 70ms + 0.15s);
+}
+
+@keyframes word-up {
+  to { transform: none; }
+}
+
+.js .hero-inner > :not(h1) {
+  opacity: 0;
+  animation: rise 0.9s var(--ease-out) forwards;
+}
+
+.js .hero-inner > .hero-tagline { animation-delay: 0.75s; }
+.js .hero-inner > .hero-text { animation-delay: 0.9s; }
+.js .hero-inner > .hero-actions { animation-delay: 1.05s; }
+.js .hero-inner > .hero-area { animation-delay: 1.2s; }
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(28px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Tagline: light sweeping across the green text */
+.hero-tagline {
+  background: linear-gradient(100deg, var(--green) 0%, var(--green) 42%, #e2ffd9 50%, var(--green) 58%, var(--green) 100%);
+  background-size: 250% 100%;
+  background-position: 100% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: none;
+}
+
+.js .hero-inner > .hero-tagline {
+  animation:
+    rise 0.9s var(--ease-out) 0.75s forwards,
+    shimmer 4.5s linear 2.2s infinite;
+}
+
+@keyframes shimmer {
+  from { background-position: 100% 0; }
+  to { background-position: -150% 0; }
+}
+
+/* Mouse "scroll down" cue */
+.scroll-cue {
+  position: absolute;
+  left: 50%;
+  bottom: 22px;
+  z-index: 1;
+  width: 26px;
+  height: 42px;
+  translate: -50% 0;
+  border: 2px solid rgba(255, 255, 255, 0.55);
+  border-radius: 14px;
+  opacity: 0;
+  animation: rise 0.8s var(--ease-out) 1.8s forwards;
+}
+
+.scroll-cue span {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  width: 4px;
+  height: 8px;
+  margin-left: -2px;
+  background: var(--green);
+  border-radius: 2px;
+  animation: wheel 1.6s ease-in-out infinite;
+}
+
+@keyframes wheel {
+  0% { transform: translateY(0); opacity: 1; }
+  70% { transform: translateY(14px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 0; }
+}
+
+@media (max-height: 720px), (max-width: 600px) {
+  .scroll-cue {
+    display: none;
+  }
+}
+
+/* ----- Road divider with a van driving across ----- */
+
+.road {
+  position: relative;
+  height: 44px;
+  overflow: hidden;
+  background: #1c1c1c;
+  border-top: 3px solid var(--green);
+  border-bottom: 1px solid #000;
+}
+
+.road::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 3px;
+  margin-top: -1px;
+  background: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.75) 0 30px, transparent 30px 60px);
+  animation: lanes 0.6s linear infinite;
+}
+
+@keyframes lanes {
+  to { background-position: -60px 0; }
+}
+
+.road-van {
+  position: absolute;
+  left: 0;
+  bottom: 5px;
+  width: 54px;
+  height: 34px;
+  color: var(--green);
+  filter: drop-shadow(0 0 8px rgba(92, 184, 72, 0.6));
+  animation:
+    drive 9s linear infinite,
+    bump 0.35s ease-in-out infinite alternate;
+}
+
+@keyframes drive {
+  from { translate: -80px 0; }
+  to { translate: calc(100vw + 80px) 0; }
+}
+
+@keyframes bump {
+  to { transform: translateY(-2px) rotate(-1deg); }
+}
+
+/* ----- Scroll reveal (classes added by main.js) ----- */
+
+.js .reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition:
+    opacity 0.8s var(--ease-out),
+    transform 0.8s var(--ease-out);
+  transition-delay: var(--d, 0s);
+}
+
+.js .reveal.reveal-left {
+  transform: translateX(-40px);
+}
+
+.js .reveal.reveal-zoom {
+  transform: scale(0.85);
+}
+
+.js .reveal.in {
+  opacity: 1;
+  transform: none;
+}
+
+/* Section underline draws itself in */
+.js .section-title::after {
+  width: 0;
+  transition: width 0.8s var(--ease-out) 0.35s;
+}
+
+.js .section-title.in::after {
+  width: 70px;
+}
+
+/* ----- Cards: tilt, glare, playful icons ----- */
+
+.fleet-card,
+.why-card {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.25s var(--ease-out), box-shadow 0.25s;
+  will-change: transform;
+}
+
+.fleet-card::after,
+.why-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 0%), rgba(92, 184, 72, 0.18), transparent 65%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.fleet-card:hover::after,
+.why-card:hover::after {
+  opacity: 1;
+}
+
+.why-card:hover {
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.12);
+}
+
+.fleet-card:hover .fleet-icon {
+  animation: vroom 0.7s var(--ease-out);
+}
+
+@keyframes vroom {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-8px) rotate(2deg); }
+  60% { transform: translateX(12px) rotate(-1deg); }
+  100% { transform: translateX(0); }
+}
+
+.service-card {
+  transition: transform 0.25s var(--ease-out), box-shadow 0.25s;
+}
+
+.service-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.12);
+}
+
+.service-card:hover .service-icon,
+.why-card:hover .service-icon {
+  animation: pop 0.6s var(--ease-spring);
+}
+
+@keyframes pop {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.25) rotate(-8deg); }
+  100% { transform: scale(1); }
+}
+
+/* ----- Pricing: glowing tiles, spotlight that follows the cursor ----- */
+
+.price-tile,
+.local-rates,
+.quote-box {
+  transition: transform 0.25s var(--ease-out), box-shadow 0.25s;
+}
+
+.price-tile:hover {
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 0 0 1px var(--green), 0 12px 30px rgba(92, 184, 72, 0.3);
+}
+
+.price-tile strong,
+.per-km-price {
+  font-variant-numeric: tabular-nums;
+}
+
+.hourly li {
+  transition: padding-left 0.25s var(--ease-out), color 0.25s;
+}
+
+.hourly li:hover {
+  padding-left: 8px;
+  color: var(--green-light);
+}
+
+.section-dark {
+  position: relative;
+}
+
+.section-dark::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(650px circle at var(--sx, 50%) var(--sy, -30%), rgba(92, 184, 72, 0.12), transparent 60%);
+}
+
+.section-dark > .container {
+  position: relative;
+  z-index: 1;
+}
+
+/* ----- Buttons: shine sweep, click ripple, magnetic pull ----- */
+
+.btn {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  transition:
+    background-color 0.2s,
+    border-color 0.2s,
+    transform 0.2s,
+    translate 0.35s var(--ease-out);
+}
+
+.btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(120deg, transparent 30%, rgba(255, 255, 255, 0.35) 50%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform 0.7s var(--ease-out);
+}
+
+.btn:hover::before {
+  transform: translateX(120%);
+}
+
+.ripple {
+  position: absolute;
+  z-index: -1;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.45);
+  transform: scale(0);
+  pointer-events: none;
+  animation: ripple 0.65s ease-out forwards;
+}
+
+@keyframes ripple {
+  to { transform: scale(1); opacity: 0; }
+}
+
+.btn.sent {
+  background: #2e8b2e;
+}
+
+/* ----- Contact form ----- */
+
+.form-row label {
+  transition: color 0.2s;
+}
+
+.form-row:focus-within label {
+  color: var(--green);
+}
+
+.form-row input,
+.form-row select,
+.form-row textarea {
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.quote-form.shake {
+  animation: shake 0.45s;
+}
+
+@keyframes shake {
+  20%, 60% { transform: translateX(-8px); }
+  40%, 80% { transform: translateX(8px); }
+}
+
+/* ----- Floating WhatsApp: pops in, then pulses ----- */
+
+.whatsapp-float::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: 50%;
+  background: #25d366;
+  animation: wa-ring 2.2s ease-out infinite;
+}
+
+.js .whatsapp-float {
+  animation: wa-in 0.7s var(--ease-spring) 2s both;
+}
+
+@keyframes wa-in {
+  from { scale: 0; }
+  to { scale: 1; }
+}
+
+@keyframes wa-ring {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+/* ----- Reduced motion: keep everything visible and still ----- */
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
 
-  * {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
     transition: none !important;
+  }
+
+  .js .hero-inner > :not(h1),
+  .js .reveal,
+  .scroll-cue {
+    opacity: 1;
+    transform: none;
+  }
+
+  .hero h1 .word > span {
+    transform: none;
+  }
+
+  .js .section-title::after {
+    width: 70px;
+  }
+
+  .road-van {
+    translate: 24px 0;
   }
 }
