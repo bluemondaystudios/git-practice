@@ -22,8 +22,9 @@ Open `index.html` in a browser, or run `python3 -m http.server` and visit http:/
 - **Prices**: in the `#pricing` section of `index.html` (Price List 2026).
 - **Phone / WhatsApp**: `081 215 3162` appears in `index.html`; the WhatsApp number
   used by the quote form is `WHATSAPP_NUMBER` in `js/main.js`.
-- **Hero photo**: add a photo at `assets/hero.jpg` (e.g. one of the vehicles) and it
-  will appear behind the hero text automatically.
+- **Hero photos**: `assets/hero.jpg` (wide, shown on desktop) and
+  `assets/hero-mobile.jpg` (close-up, shown on phones). Replace them with real
+  photos of the fleet when available, keeping the same file names.
 
 ## Quote form
 

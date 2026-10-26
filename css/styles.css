@@ -255,21 +255,39 @@ p {
 
 .hero {
   position: relative;
+  overflow: hidden;
   color: var(--white);
-  /* Drop a photo at assets/hero.jpg to show it behind the gradient. */
-  background:
-    linear-gradient(90deg, rgba(11, 11, 11, 0.95) 0%, rgba(11, 11, 11, 0.8) 45%, rgba(11, 11, 11, 0.35) 100%),
-    url("../assets/hero.jpg") center / cover no-repeat,
-    radial-gradient(circle at 80% 40%, #2c4a26 0%, var(--black) 60%);
+  background: var(--black);
+}
+
+/* Desktop: van photo on the right, fading into black behind the text */
+.hero::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 52%;
+  background: url("../assets/hero.jpg") 6% center / cover no-repeat;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 22%);
+  mask-image: linear-gradient(90deg, transparent 0%, #000 22%);
+}
+
+/* Phones/tablets: close-up photo shown below the text instead */
+.hero-photo {
+  display: none;
 }
 
 .hero-inner {
+  position: relative;
+  z-index: 1;
   padding: 96px 20px;
   max-width: 1200px;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
 }
 
 .hero h1 {
-  max-width: 760px;
+  max-width: 700px;
   font-size: clamp(2rem, 5vw, 3.4rem);
   font-weight: 800;
 }
@@ -794,6 +812,22 @@ p {
 
   .site-nav a::after {
     display: none;
+  }
+
+  .hero::before {
+    display: none;
+  }
+
+  .hero-photo {
+    display: block;
+    aspect-ratio: 900 / 772;
+    max-height: 560px;
+    width: 100%;
+    background: url("../assets/hero-mobile.jpg") center / cover no-repeat;
+  }
+
+  .hero-inner {
+    padding-bottom: 40px;
   }
 
   .logo-name {
