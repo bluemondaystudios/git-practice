@@ -16,6 +16,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
+  <script>document.documentElement.classList.add("js");</script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -67,6 +68,7 @@
         <span><strong>BOOK NOW</strong><br>081 215 3162</span>
       </a>
     </div>
+    <div class="scroll-progress" aria-hidden="true"></div>
   </header>
 
   <main>
@@ -88,7 +90,13 @@
           Serving Pretoria • Gauteng • South Africa
         </p>
       </div>
+      <a href="#fleet" class="scroll-cue" aria-label="Scroll to our fleet"><span></span></a>
     </section>
+
+    <!-- Animated road divider -->
+    <div class="road" aria-hidden="true">
+      <svg class="road-van" viewBox="0 0 64 40"><use href="#icon-van"/></svg>
+    </div>
 
     <!-- ===== Fleet ===== -->
     <section class="section" id="fleet">
