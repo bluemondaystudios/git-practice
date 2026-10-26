@@ -273,11 +273,6 @@ p {
   mask-image: linear-gradient(90deg, transparent 0%, #000 22%);
 }
 
-/* Phones/tablets: close-up photo shown below the text instead */
-.hero-photo {
-  display: none;
-}
-
 .hero-inner {
   position: relative;
   z-index: 1;
@@ -814,20 +809,18 @@ p {
     display: none;
   }
 
+  /* Phones/tablets: close-up photo fills the whole hero, darkened behind the text */
+  .hero {
+    min-height: calc(100svh - var(--header-h));
+  }
+
   .hero::before {
-    display: none;
-  }
-
-  .hero-photo {
-    display: block;
-    aspect-ratio: 900 / 772;
-    max-height: 560px;
     width: 100%;
-    background: url("../assets/hero-mobile.jpg") center / cover no-repeat;
-  }
-
-  .hero-inner {
-    padding-bottom: 40px;
+    background:
+      linear-gradient(180deg, rgba(11, 11, 11, 0.3) 0%, rgba(11, 11, 11, 0.5) 60%, rgba(11, 11, 11, 0.1) 100%),
+      url("../assets/hero-mobile.jpg") center bottom / cover no-repeat;
+    -webkit-mask-image: none;
+    mask-image: none;
   }
 
   .logo-name {
