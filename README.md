@@ -6,9 +6,9 @@ Static website for **EDRAM Shuttle and Tours** (Gezina, Pretoria), to be served 
 ## Structure
 
 ```
-index.html          single-page site (Home, Fleet, Services, Pricing, Why Us, Contact)
+index.html          single-page site (Home, Fleet, Services, Funerals, Quotes, Why Us, Contact)
 css/styles.css      styles (brand colours are CSS variables at the top)
-js/main.js          mobile menu, active nav link, quote form → WhatsApp
+js/main.js          mobile menu, motion, quote form → WhatsApp
 assets/favicon.svg  site icon
 CNAME               custom domain for GitHub Pages
 ```
@@ -19,7 +19,10 @@ Open `index.html` in a browser, or run `python3 -m http.server` and visit http:/
 
 ## Editing
 
-- **Prices**: in the `#pricing` section of `index.html` (Price List 2026).
+- **Pricing**: the site shows no prices; the `#quote` section explains how to get a
+  quote, and every "Get a quote" link pre-fills the form at `#contact`.
+- **Funeral shuttles**: the `#funerals` section in `index.html`.
+- **Map**: the Google Maps embed in the `#contact` section (`.map-card`).
 - **Phone / WhatsApp**: `081 215 3162` appears in `index.html`; the WhatsApp number
   used by the quote form is `WHATSAPP_NUMBER` in `js/main.js`.
 - **Hero photos**: `assets/hero.jpg` (wide, shown beside the text on desktop) and
