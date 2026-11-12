@@ -42,7 +42,7 @@ const header = document.querySelector(".site-header");
 const hero = document.querySelector(".hero");
 const heroInner = document.querySelector(".hero-inner");
 const navLinks = siteNav.querySelectorAll("a");
-const sections = ["fleet", "services", "pricing", "why-us", "contact"]
+const sections = ["fleet", "services", "funerals", "quote", "why-us", "contact"]
   .map((id) => document.getElementById(id));
 
 function updateActiveLink() {
@@ -92,14 +92,17 @@ const revealGroups = [
   [".section-subtitle", ""],
   [".fleet-card", ""],
   [".service-card", ""],
+  [".funeral-intro", "reveal-calm"],
+  [".funeral-values li", "reveal-calm"],
+  [".funeral-note", "reveal-calm"],
+  [".quote-section .eyebrow", ""],
+  [".quote-statement", ""],
+  [".quote-lead", ""],
+  [".quote-step", "reveal-zoom"],
+  [".quote-actions", ""],
   [".why-card", "reveal-zoom"],
-  [".price-heading", ""],
-  [".price-route", ""],
-  [".price-tile", "reveal-zoom"],
-  [".local-rates", ""],
-  [".hourly li", "reveal-left"],
-  [".quote-box", "reveal-zoom"],
   [".contact-list li", "reveal-left"],
+  [".map-card", ""],
   [".quote-form", ""],
   [".footer-slogan", ""],
 ];
@@ -148,44 +151,6 @@ if ("IntersectionObserver" in window) {
   revealEls.forEach(show);
 }
 
-// Prices count up from zero when they come into view
-function countUp(el) {
-  const text = el.textContent.trim();
-  const match = text.match(/^R([\d,]+)(\.\d+)?/);
-  if (!match) return;
-
-  const decimals = match[2] ? match[2].length - 1 : 0;
-  const target = parseFloat((match[1] + (match[2] || "")).replace(/,/g, ""));
-  const suffix = text.slice(match[0].length);
-  const format = (n) => "R" + n.toLocaleString("en-US", {
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
-  }) + suffix;
-
-  const duration = 1300;
-  const start = performance.now();
-  const step = (now) => {
-    const t = Math.min((now - start) / duration, 1);
-    const eased = 1 - Math.pow(1 - t, 3);
-    el.textContent = format(target * eased);
-    if (t < 1) requestAnimationFrame(step);
-    else el.textContent = text;
-  };
-  requestAnimationFrame(step);
-}
-
-if (!reduceMotion && "IntersectionObserver" in window) {
-  const countObserver = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (!entry.isIntersecting) return;
-      countObserver.unobserve(entry.target);
-      countUp(entry.target);
-    });
-  }, { threshold: 0.6 });
-  document.querySelectorAll(".price-tile strong, .per-km-price")
-    .forEach((el) => countObserver.observe(el));
-}
-
 // Pointer-only effects: card tilt + glare, magnetic buttons, pricing spotlight
 if (finePointer && !reduceMotion) {
   document.querySelectorAll(".fleet-card, .why-card").forEach((card) => {
@@ -204,7 +169,7 @@ if (finePointer && !reduceMotion) {
     });
   });
 
-  document.querySelectorAll(".hero .btn, .header-cta, .quote-box .btn").forEach((btn) => {
+  document.querySelectorAll(".hero .btn, .header-cta, .quote-actions .btn").forEach((btn) => {
     btn.addEventListener("pointermove", (event) => {
       const r = btn.getBoundingClientRect();
       const dx = event.clientX - (r.left + r.width / 2);
@@ -244,6 +209,18 @@ if (!reduceMotion) {
 
 // Quote form: build a WhatsApp message and open it
 const form = document.getElementById("quote-form");
+
+// "Get a quote" links pre-select the service or vehicle, then bring the form into focus
+document.addEventListener("click", (event) => {
+  const link = event.target.closest("[data-service], [data-vehicle]");
+  if (!link) return;
+  if (link.dataset.service) form.elements.service.value = link.dataset.service;
+  if (link.dataset.vehicle) form.elements.vehicle.value = link.dataset.vehicle;
+  form.classList.remove("flash");
+  void form.offsetWidth; // restart the animation
+  form.classList.add("flash");
+  setTimeout(() => form.elements.name.focus({ preventScroll: true }), 700);
+});
 const formError = document.getElementById("form-error");
 const submitBtn = form.querySelector('button[type="submit"]');
 const submitLabel = submitBtn.textContent;
@@ -265,14 +242,18 @@ form.addEventListener("submit", (event) => {
   formError.hidden = true;
 
   const lines = [
-    "Hi EDRAM Shuttle and Tours, I'd like a quote / booking.",
+    "Hi EDRAM Shuttle and Tours, I'd like a quote please.",
     "",
     `Name: ${name}`,
     `Phone: ${phone}`,
     `Service: ${data.service}`,
   ];
-  if (data.vehicle) lines.push(`Vehicle: ${data.vehicle}`);
+  if (data.pickup.trim()) lines.push(`Pickup: ${data.pickup.trim()}`);
+  if (data.destination.trim()) lines.push(`Destination: ${data.destination.trim()}`);
   if (data.date) lines.push(`Date: ${data.date}`);
+  if (data.time) lines.push(`Time: ${data.time}`);
+  if (data.passengers) lines.push(`Passengers: ${data.passengers}`);
+  if (data.vehicle) lines.push(`Vehicle: ${data.vehicle}`);
   if (data.details.trim()) lines.push(`Details: ${data.details.trim()}`);
 
   const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(lines.join("\n"))}`;
