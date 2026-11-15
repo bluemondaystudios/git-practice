@@ -1245,7 +1245,7 @@ p {
 
 .road {
   position: relative;
-  height: 44px;
+  height: 74px;
   overflow: hidden;
   background: #1c1c1c;
   border-top: 3px solid var(--green);
@@ -1271,9 +1271,9 @@ p {
 .road-van {
   position: absolute;
   left: 0;
-  bottom: 5px;
-  width: 54px;
-  height: 34px;
+  top: 1px; /* upper lane: South Africa keeps left, so left-to-right traffic uses the far side */
+  width: 48px;
+  height: 30px;
   color: var(--green);
   filter: drop-shadow(0 0 8px rgba(92, 184, 72, 0.6));
   animation:
